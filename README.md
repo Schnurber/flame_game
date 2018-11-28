@@ -1,9 +1,8 @@
 # flame_game
 
-A new Flutter application.
+A hello world example for the [flame game-engine](https://github.com/luanpotter/flame/) 
 
-## Getting Started
+It is a game-engine for [flutter](https://flutter.io/).
 
-For help getting started with Flutter, view our online
-[documentation](https://flutter.io/).
-# flame_game
+Language is: [Dart](https://www.dartlang.org/).
+
