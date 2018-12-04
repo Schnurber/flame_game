@@ -6,7 +6,6 @@ import 'package:flame/game.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/scheduler/ticker.dart';
 
 /// Creates new game and gesture recognizer
 void main() async {
@@ -18,6 +17,7 @@ void main() async {
         g.handleInput(evt.globalPosition.dx, evt.globalPosition.dy));
 }
 
+
 /// Simple game class
 class MyGame extends Game {
   // The only sprite
@@ -25,8 +25,6 @@ class MyGame extends Game {
 
   // Fullscreen dimension
   Size dimensions;
-  AnimationController controller;
-  Animation<double> posAnimation;
 
   /// Gets dimensions of screen
   MyGame(this.dimensions) {
@@ -36,6 +34,7 @@ class MyGame extends Game {
     // Position in center
     comp.x = dimensions.width / 2 - comp.width / 2;
     comp.y = dimensions.height / 2 - comp.height / 2;
+
   }
 
   /// Game loop
@@ -57,6 +56,7 @@ class MyGame extends Game {
   void handleInput(double xp, double yp) {
     comp.x = xp - comp.width / 2;
     comp.y = yp - comp.height / 2;
+
   }
 
   @override
