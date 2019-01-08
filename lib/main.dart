@@ -6,15 +6,28 @@ import 'package:flame/game.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:aeyrium_sensor/aeyrium_sensor.dart';
+import 'dart:math' as math;
 
 /// Creates new game and gesture recognizer
 void main() async {
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown
+  ]);
   Size dimensions = await Flame.util.initialDimensions();
   MyGame g = new MyGame(dimensions);
   runApp(g.widget);
+
   Flame.util.addGestureRecognizer(new TapGestureRecognizer()
     ..onTapDown = (TapDownDetails evt) =>
         g.handleInput(evt.globalPosition.dx, evt.globalPosition.dy));
+
+  AeyriumSensor.sensorEvents.listen((SensorEvent event) {
+    g.handleTurn(event.pitch, event.roll);
+
+  });
 }
 
 
@@ -22,7 +35,7 @@ void main() async {
 class MyGame extends Game {
   // The only sprite
   SpriteComponent comp;
-
+  String infoTxt = 'Tap on Screen';
   // Fullscreen dimension
   Size dimensions;
 
@@ -41,8 +54,8 @@ class MyGame extends Game {
   @override
   void render(Canvas canvas) {
     //Render Text
-    TextPainter txt = Flame.util.text('Tap on Screen',
-        textAlign: TextAlign.center, fontSize: 24.0, color: Colors.blue[800]);
+    TextPainter txt = Flame.util.text(infoTxt,
+        textAlign: TextAlign.left, fontSize: 24.0, color: Colors.blue[800]);
     txt.paint(
         canvas, Offset(dimensions.width / 2 - txt.width / 2, 50.0)); // position
     // Update ship pos
@@ -56,6 +69,18 @@ class MyGame extends Game {
   void handleInput(double xp, double yp) {
     comp.x = xp - comp.width / 2;
     comp.y = yp - comp.height / 2;
+
+  }
+  void handleTurn(double pitch, double roll) {
+    double p = pitch / math.pi * 180.0;
+    double r = roll  / math.pi * 180.0;
+
+    double movement = r / 10;
+    comp.x -= movement;
+    if (comp.x > dimensions.width) comp.x = -comp.width;
+    if (comp.x < -comp.width) comp.x = dimensions.width;
+
+    infoTxt = 'Pitch:${p.toStringAsFixed(3)} Roll:${r.toStringAsFixed(3)}';
 
   }
 
