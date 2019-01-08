@@ -8,6 +8,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:aeyrium_sensor/aeyrium_sensor.dart';
+import 'package:sensors/sensors.dart';
 import 'dart:math' as math;
 
 /// Creates new game and gesture recognizer
@@ -26,7 +27,11 @@ void main() async {
 
   AeyriumSensor.sensorEvents.listen((SensorEvent event) {
     g.handleTurn(event.pitch, event.roll);
+  });
 
+  accelerometerEvents.listen((AccelerometerEvent event) {
+    // Do something with the event.
+    g.handleAcc(event.x, event.y, event.z);
   });
 }
 
@@ -41,13 +46,13 @@ class MyGame extends Game {
 
   /// Gets dimensions of screen
   MyGame(this.dimensions) {
+
     Sprite sprite = Sprite("ship.png");
     comp = new SpriteComponent.fromSprite(
         dimensions.width / 4, dimensions.width / 4, sprite);
     // Position in center
     comp.x = dimensions.width / 2 - comp.width / 2;
     comp.y = dimensions.height / 2 - comp.height / 2;
-
   }
 
   /// Game loop
@@ -71,19 +76,29 @@ class MyGame extends Game {
     comp.y = yp - comp.height / 2;
 
   }
+
   void handleTurn(double pitch, double roll) {
+    /*
     double p = pitch / math.pi * 180.0;
     double r = roll  / math.pi * 180.0;
 
-    double movement = r / 10;
-    comp.x -= movement;
-    if (comp.x > dimensions.width) comp.x = -comp.width;
-    if (comp.x < -comp.width) comp.x = dimensions.width;
-
     infoTxt = 'Pitch:${p.toStringAsFixed(3)} Roll:${r.toStringAsFixed(3)}';
+    comp.x -= r / 10;
+    _handleSensor();
+    */
 
   }
+  void handleAcc(double ax, double ay, double az) {
 
+    infoTxt = 'X:${ax.toStringAsFixed(3)}';
+    comp.x -= ax;
+    _handleSensor();
+  }
+  
+  void _handleSensor() {
+    if (comp.x > dimensions.width) comp.x = -comp.width;
+    if (comp.x < -comp.width) comp.x = dimensions.width;
+  }
   @override
   void update(double t) {
     // TODO: implement update
